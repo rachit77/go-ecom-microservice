@@ -1,0 +1,10 @@
+
+services:
+  account:
+  catlog:
+  order:
+  graphql:
+  account_db:
+  catlog_db:
+  order_db:
+
