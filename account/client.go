@@ -57,7 +57,7 @@ func (c *Client) GetAccount(ctx context.Context, id string) (*Account, error) {
 	}, nil
 }
 
-func (c *Client) GetAccounts(ctx context.Context, skip uint, take uint) ([]Account, error) {
+func (c *Client) GetAccounts(ctx context.Context, skip uint64, take uint64) ([]Account, error) {
 	resp, err := c.service.GetAccounts(ctx, &pb.GetAccountsRequest{
 		Skip: uint64(skip),
 		Take: uint64(take),

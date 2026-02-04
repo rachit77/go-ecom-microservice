@@ -2,47 +2,50 @@ package main
 
 import (
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/rachit77/go-ecom-microservice/account"
+	"github.com/rachit77/go-ecom-microservice/catalog"
+	"github.com/rachit77/go-ecom-microservice/order"
 )
 
 type Server struct {
-	// accountClient *account.Client
-	// catalogClient *catalog.Client
-	// orderClient   *order.Client
+	accountClient *account.Client
+	catalogClient *catalog.Client
+	orderClient   *order.Client
 }
 
 // create a new server function
 func NewGraphQLServer(accountUrl, catalogUrl, orderUrl string) (*Server, error) {
-	// accountClient, err := account.NewClient(accountUrl)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	accountClient, err := account.NewClient(accountUrl)
+	if err != nil {
+		return nil, err
+	}
 
-	// catalogClient, err := catalog.NewClient(catalogUrl)
-	// if err != nil {
-	// 	// catalog is dependent on account
-	// 	accountClient.Close()
-	// 	return nil, err
-	// }
+	catalogClient, err := catalog.NewClient(catalogUrl)
+	if err != nil {
+		// catalog is dependent on account
+		accountClient.Close()
+		return nil, err
+	}
 
-	// orderClient, err := order.NewClient(orderUrl)
-	// if err != nil {
-	// 	accountClient.Close()
-	// 	catalogClient.Close()
-	// 	return nil, err
-	// }
+	orderClient, err := order.NewClient(orderUrl)
+	if err != nil {
+		accountClient.Close()
+		catalogClient.Close()
+		return nil, err
+	}
 
 	return &Server{
-		// accountClient,
-		// catalogClient,
-		// orderClient,
+		accountClient: accountClient,
+		catalogClient: catalogClient,
+		orderClient:   orderClient,
 	}, nil
 }
 
-// func (s *Server) Mutation() MutationResolver {
-// 	return &mutationResolver{
-// 		server: s,
-// 	}
-// }
+func (s *Server) Mutation() MutationResolver {
+	return &mutationResolver{
+		server: s,
+	}
+}
 
 func (s *Server) Query() QueryResolver {
 	return &queryResolver{
@@ -58,6 +61,6 @@ func (s *Server) Account() AccountResolver {
 
 func (s *Server) ToExecutableSchema() graphql.ExecutableSchema {
 	return NewExecutableSchema(Config{
-		// Resolvers: s,
+		Resolvers: s,
 	})
 }
