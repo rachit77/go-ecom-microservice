@@ -5,7 +5,8 @@ COPY go.mod go.sum ./
 COPY account account
 COPY catalog catalog
 COPY order order
-RUN go build -o /go/bin/app ./order/cmd/order
+ ENV CGO_ENABLED=0 GOOS=linux
+ RUN go build -ldflags "-s -w" -o /go/bin/app ./order/cmd/order
 
 FROM alpine:3.18
 WORKDIR /usr/bin

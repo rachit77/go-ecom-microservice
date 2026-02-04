@@ -3,7 +3,8 @@ RUN apt-get update && apt-get install -y gcc g++ make ca-certificates && rm -rf 
 WORKDIR /go/src/github.com/rachit77/go-ecom-microservice
 COPY go.mod go.sum ./
 COPY catalog catalog
-RUN go build -o /go/bin/app ./catalog/cmd/catalog
+ENV CGO_ENABLED=0 GOOS=linux
+RUN go build -ldflags "-s -w" -o /go/bin/app ./catalog/cmd/catalog
 
 FROM alpine:3.18
 WORKDIR /usr/bin
