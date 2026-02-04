@@ -1,14 +1,13 @@
-FROM golang:1.24-alpine3.11 AS build
-RUN apk --no-cache add gcc g++ make ca-certificates
+FROM golang:1.24 AS build
+RUN apt-get update && apt-get install -y gcc g++ make ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /go/src/github.com/rachit77/go-ecom-microservice
 COPY go.mod go.sum ./
-COPY vendor vendor
 COPY account account
 COPY catalog catalog
 COPY order order
-RUN GO111MODULE=on go build -mod vendor -o /go/bin/app ./order/cmd/catalog
+RUN go build -o /go/bin/app ./order/cmd/order
 
-FROM alpine:3.11
+FROM alpine:3.18
 WORKDIR /usr/bin
 COPY --from=build /go/bin .
 EXPOSE 8080
